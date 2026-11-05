@@ -1,0 +1,60 @@
+FONTLOG for ReQuizit Display
+
+This file provides detailed information on the ReQuizit Display font.
+This information should be distributed along with the ReQuizit Display font
+and any derivative works.
+
+
+Basic Font Information
+
+ReQuizit Display is the headline typeface of ReQuizit. It is a modified
+version of Bebas Neue Bold, designed by Ryoichi Tsunekawa (Dharma Type), and is
+licensed under the SIL Open Font License, Version 1.1.
+
+One weight: Bold. Covers Latin, Latin Extended (including Icelandic) and the
+Russian Cyrillic alphabet.
+
+Source file: sources/BebasNeue_Bold_REQUIZIT_2025.otf
+Upstream project: https://github.com/dharmatype/Bebas-Neue
+
+
+ChangeLog
+
+5 Nov 2026 (Igor Churmeev) ReQuizit Display v1.000
+- Renamed the family to ReQuizit Display. The font name no longer uses
+  "Bebas Neue".
+- Rewrote the name table and the CFF names, set the version to 1.000 and the
+  vendor ID to REQZ.
+- Replaced the license description with the standard OFL text.
+- Set fsType to 0 (installable embedding).
+- Removed the DSIG table, which no longer matched the file.
+- Glyphs, metrics, kerning and OpenType features are unchanged from the 2025
+  edition.
+
+2025 (Igor Churmeev) Bebas Neue REQUIZIT 2025
+- Started from Bebas Neue Bold v1.003, the 2014 edition published in the
+  "fonts/BebasNeue(2014)ByFontFabric" folder of the upstream project.
+- Added 23 ReQuizit icons on the code points of fractions and Roman numerals:
+  shields with the numbers 1, 5, 7, 13, 42, 80, 99, 100, 146 and 160 (filled
+  and outlined), a blank filled shield, a blank outlined shield, and a brain
+  shaped like an apple. The code point of each icon is listed in README.md.
+- Redrew Cyrillic У and у.
+
+For the history of the original design, see the Bebas Neue FONTLOG:
+https://github.com/dharmatype/Bebas-Neue/blob/master/FONTLOG.txt
+
+
+Acknowledgements
+
+N: Ryoichi Tsunekawa (Dharma Type)
+E: info@dharmatype.com
+W: http://dharmatype.com
+D: Designer of Bebas Neue
+
+N: Fontfabric
+W: https://www.fontfabric.com
+D: Published the 2014 edition of the Bebas Neue family that this font starts from
+
+N: Igor Churmeev (ReQuizit)
+W: https://github.com/requizit-is/requizit-display
+D: 2025 changes and the ReQuizit Display build
