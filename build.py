@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from fontTools.pens.t2CharStringPen import T2CharStringPen
+from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).parent
@@ -11,9 +13,12 @@ OUT = ROOT / "fonts"
 FAMILY = "ReQuizit Display"
 STYLE = "Bold"
 PS_NAME = "ReQuizitDisplay-Bold"
-VERSION = "1.000"
+VERSION = "1.001"
 VENDOR = "REQZ"
 OFL_URL = "https://openfontlicense.org"
+NUMERO = "uni2116"
+# How far the raised o of № moves into the right side bearing of the N.
+NUMERO_TUCK = 20
 
 COPYRIGHT = (
     "Copyright (c) 2010 by Ryoichi Tsunekawa. All rights reserved. "
@@ -34,7 +39,7 @@ NAMES = {
     9: "Ryoichi Tsunekawa; Igor Churmeev",
     10: (
         "Based on Bebas Neue Bold by Ryoichi Tsunekawa (Dharma Type), 2014 edition, "
-        "with ReQuizit icons added and Cyrillic U redrawn."
+        "with ReQuizit icons and the numero sign added and Cyrillic U redrawn."
     ),
     11: "https://github.com/requizit-is/requizit-display",
     12: "http://dharmatype.com",
@@ -68,9 +73,34 @@ def rename(font: TTFont) -> None:
         del font["DSIG"]
 
 
+def add_numero(font: TTFont) -> None:
+    """Draws № from N and the raised o with its bar (º)."""
+    glyphs = font.getGlyphSet()
+    hmtx = font["hmtx"]
+    shift = hmtx["N"][0] - NUMERO_TUCK
+    width = shift + hmtx["ordmasculine"][0]
+    pen = T2CharStringPen(width, glyphs)
+    glyphs["N"].draw(pen)
+    glyphs["ordmasculine"].draw(TransformPen(pen, (1, 0, 0, 1, shift, 0)))
+
+    top = font["CFF "].cff.topDictIndex[0]
+    strings = top.CharStrings
+    strings.charStringsIndex.append(pen.getCharString(private=top.Private, globalSubrs=top.GlobalSubrs))
+    strings.charStrings[NUMERO] = len(strings.charStringsIndex) - 1
+    order = [*font.getGlyphOrder(), NUMERO]
+    top.charset = order
+    font.setGlyphOrder(order)
+    font["maxp"].numGlyphs += 1
+    hmtx[NUMERO] = (width, hmtx["N"][1])
+    for table in font["cmap"].tables:
+        if table.isUnicode():
+            table.cmap[0x2116] = NUMERO
+
+
 def build(source: Path = SOURCE, out: Path = OUT) -> dict[str, Path]:
     font = TTFont(source)
     rename(font)
+    add_numero(font)
     paths = {
         "otf": out / "otf" / f"{PS_NAME}.otf",
         "woff2": out / "webfonts" / f"{PS_NAME}.woff2",

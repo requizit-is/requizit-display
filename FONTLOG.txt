@@ -20,6 +20,11 @@ Upstream project: https://github.com/dharmatype/Bebas-Neue
 
 ChangeLog
 
+5 Nov 2026 (Igor Churmeev) ReQuizit Display v1.001
+- Added the numero sign № (U+2116). build.py draws it from N and the raised
+  o with its bar (º), with the o moved 20 units into the side bearing of the
+  N. The source file is unchanged.
+
 5 Nov 2026 (Igor Churmeev) ReQuizit Display v1.000
 - Renamed the family to ReQuizit Display. The font name no longer uses
   "Bebas Neue".
