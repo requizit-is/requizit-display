@@ -50,7 +50,7 @@ uv run python build.py   # writes fonts/
 uv run pytest            # checks the names, license fields and glyphs
 ```
 
-The build takes `sources/BebasNeue_Bold_REQUIZIT_2025.otf`, gives it the ReQuizit Display names and writes the files in `fonts/`. It does not change glyphs. To change a glyph, edit the source file in a font editor, then rebuild and record the change in `FONTLOG.txt`.
+The build takes `sources/BebasNeue_Bold_REQUIZIT_2025.otf`, gives it the ReQuizit Display names, adds the numero sign № (drawn from N and º) and writes the files in `fonts/`. It does not change the glyphs of the source. To change a glyph, edit the source file in a font editor, then rebuild and record the change in `FONTLOG.txt`.
 
 ## Credits and license
 

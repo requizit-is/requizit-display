@@ -1,5 +1,6 @@
 import pytest
 from fontTools.pens.recordingPen import RecordingPen
+from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 
 from build import SOURCE, build
@@ -43,9 +44,9 @@ def test_family_and_style_names(font):
     n = names(font)
     assert n[1] == "ReQuizit Display"
     assert n[2] == "Bold"
-    assert n[3] == "1.000;REQZ;ReQuizitDisplay-Bold"
+    assert n[3] == "1.001;REQZ;ReQuizitDisplay-Bold"
     assert n[4] == "ReQuizit Display Bold"
-    assert n[5] == "Version 1.000"
+    assert n[5] == "Version 1.001"
     assert n[6] == "ReQuizitDisplay-Bold"
 
 
@@ -62,7 +63,7 @@ def test_cff_names_match_the_name_table(font):
     assert cff.fontNames == ["ReQuizitDisplay-Bold"]
     assert top.FamilyName == "ReQuizit Display"
     assert top.FullName == "ReQuizit Display Bold"
-    assert top.version == "1.000"
+    assert top.version == "1.001"
     assert top.Copyright == names(font)[0]
     assert top.Notice == names(font)[7]
 
@@ -95,7 +96,7 @@ def test_license_fields_point_to_the_ofl(font):
 
 def test_metadata_no_longer_claims_the_original_vendor(font):
     assert font["OS/2"].achVendID == "REQZ"
-    assert font["head"].fontRevision == 1.0
+    assert font["head"].fontRevision == pytest.approx(1.001, abs=1 / 65536)  # 16.16 fixed point
     assert "DSIG" not in font
 
 
@@ -108,7 +109,23 @@ def test_keeps_bold_style_bits(font):
     assert font["head"].macStyle & 1
 
 
-def test_glyphs_are_unchanged(font):
+def test_keeps_every_glyph_of_the_source(font):
     source = TTFont(SOURCE)
-    assert font.getBestCmap() == source.getBestCmap()
-    assert outlines(font) == outlines(source)
+    assert font.getBestCmap() == {**source.getBestCmap(), 0x2116: "uni2116"}
+    built = outlines(font)
+    assert {name: built[name] for name in source.getGlyphOrder()} == outlines(source)
+
+
+def test_draws_numero_from_n_and_the_raised_o(font):
+    glyphs = font.getGlyphSet()
+    hmtx = font["hmtx"]
+    width, lsb = hmtx["uni2116"]
+    shift = width - hmtx["ordmasculine"][0]
+    assert hmtx["N"][0] - 40 <= shift <= hmtx["N"][0]
+    assert lsb == hmtx["N"][1]
+    expected = RecordingPen()
+    glyphs["N"].draw(expected)
+    glyphs["ordmasculine"].draw(TransformPen(expected, (1, 0, 0, 1, shift, 0)))
+    actual = RecordingPen()
+    glyphs["uni2116"].draw(actual)
+    assert actual.value == expected.value
